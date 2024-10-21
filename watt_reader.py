@@ -98,7 +98,9 @@ class BP35A1:
                 line = self._uart.readline().strip()
                 print("debug: " + str(line))
                 if line.startswith(b"EVENT 22"):
-                    # scan end event. resend scan command.
+                    # scan end event.
+                    if pandesc:
+                        return pandesc
                     print("found scan end event. retry...")
                     duration += 1
                     if duration > 9:
@@ -115,7 +117,6 @@ class BP35A1:
                     b"Pan ID" in pandesc and
                     b"Addr" in pandesc):
                     print("pandesc: {}".format(pandesc))
-                    return pandesc
 
     def init(self):
         self._uart.init(115200, bits=8, parity=None, stop=1, timeout=2000)
